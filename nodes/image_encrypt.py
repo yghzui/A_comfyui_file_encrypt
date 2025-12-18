@@ -11,7 +11,7 @@ class ImageEncryptXor:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "mode": (["encrypt", "decrypt"],),
+                "enabled": ("BOOLEAN", {"default": True}),
             }
         }
 
@@ -19,9 +19,11 @@ class ImageEncryptXor:
     FUNCTION = "process"
     CATEGORY = "A_comfyui_file_encrypt/Image"
 
-    def process(self, image: torch.Tensor, mode: str):
+    def process(self, image: torch.Tensor, enabled: bool):
         if not isinstance(image, torch.Tensor):
             image = torch.tensor(image)
+        if not enabled:
+            return (image,)
         img = image.clamp(0.0, 1.0)
         device = img.device
         orig_dtype = img.dtype
@@ -34,4 +36,3 @@ class ImageEncryptXor:
         enc_f32 = enc.astype(np.float32) / 255.0
         out = torch.from_numpy(enc_f32).to(device=device, dtype=orig_dtype)
         return (out,)
-
