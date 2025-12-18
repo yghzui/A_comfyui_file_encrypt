@@ -10,7 +10,7 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "ImageEncryptXor": "ImageEncryptXor 图像加密/解密",
-    "ImageEncryptXorPreview": "ImageEncryptXorPreview 图像加密预览输出节点",
+    "ImageEncryptXorPreview": "ImageEncryptXorPreview 图像加密预览",
 }
 
 
