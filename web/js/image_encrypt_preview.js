@@ -159,13 +159,20 @@ app.registerExtension({
                 }
                 appInstance.graph.setDirtyCanvas(true, false);
             };
-
-            this.decrypt_preview = false;
+            this.decrypt_preview = !!w.value;
         };
 
         const onDrawBackground = nodeType.prototype.onDrawBackground;
         nodeType.prototype.onDrawBackground = function (ctx) {
-            if (this.decrypt_preview && this.imgs && this.imgs.length) {
+            let decryptEnabled = !!this.decrypt_preview;
+            if (this.widgets && this.widgets.length) {
+                const widget = this.widgets.find((w) => w.name === "decrypt_preview");
+                if (widget) {
+                    decryptEnabled = !!widget.value;
+                    this.decrypt_preview = decryptEnabled;
+                }
+            }
+            if (decryptEnabled && this.imgs && this.imgs.length) {
                 const idx = this.imageIndex ?? 0;
                 const img = this.imgs[idx];
                 if (img && !img.__decryptRequested) {
@@ -184,7 +191,7 @@ app.registerExtension({
                         appInstance.graph.setDirtyCanvas(true, false);
                     });
                 }
-            } else if (!this.decrypt_preview && this.imgs && this.imgs.length) {
+            } else if (!decryptEnabled && this.imgs && this.imgs.length) {
                 for (const img of this.imgs) {
                     if (img && img.__encryptedSrc && img.__decrypted) {
                         img.src = img.__encryptedSrc;
@@ -196,4 +203,3 @@ app.registerExtension({
         };
     },
 });
-
